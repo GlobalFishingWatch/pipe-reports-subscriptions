@@ -1,0 +1,45 @@
+{
+  "name": "reports-subscriptions",
+  "version": "1.0.0",
+  "description": "Small process which checks for active report subscriptions",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlobalFishingWatch/pipe-reports.git"
+  },
+  "author": "Global Fishing Watch",
+  "bugs": {
+    "url": "https://github.com/GlobalFishingWatch/pipe-reports-subscriptions/issues"
+  },
+  "homepage": "https://github.com/GlobalFishingWatch/pipe-reports-subscriptions#readme",
+  "engines": {
+    "node": "~8"
+  },
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "node": true
+    },
+    "extends": "eslint:recommended"
+  },
+  "main": "src/index.js",
+  "scripts": {
+    "start": "per-env",
+    "start:production": "node src/index.js",
+    "start:development": "nodemon --inspect -e json,js src/index.js",
+    "lint": "eslint src/**/*.js"
+  },
+  "dependencies": {
+    "@google-cloud/pubsub": "^0.13.1",
+    "@google-cloud/datastore": "^1.1.0",
+    "@google-cloud/storage": "^1.2.0",
+    "lodash": "^4.17.2",
+    "moment": "^2.18.1",
+    "per-env": "^1.0.2",
+    "winston": "^2.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^2.13.1",
+    "nodemon": "^1.9.2"
+  }
+}
