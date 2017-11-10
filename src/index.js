@@ -28,6 +28,7 @@ const buildReportParams = (subscription) => {
 
 const buildReportRequest = (subscription) => {
   return Object.assign({}, subscription.base, {
+    subscriptionId: subscription[datastore.KEY].path,
     timestamp: new Date(),
     recurrency: subscription.recurrency,
     params: buildReportParams(subscription),
@@ -88,21 +89,27 @@ const enqueueReportForSubscription = async (subscription) => {
 };
 
 const main = async () => {
-  log.debug("Checking report subscriptions");
+  try {
+    log.debug("Checking report subscriptions");
 
-  log.debug("Building report query");
-  const query = datastore
-    .createQuery("ReportSubscription")
-    .filter('nextReportTimestamp', '<=', new Date());
+    log.debug("Building report query");
+    const query = datastore
+      .createQuery("ReportSubscription")
+      .filter('nextReportTimestamp', '<=', new Date())
+      .filter('active', true);
 
-  log.debug("Running active subscriptions query");
-  const [activeSubscriptions, paginationInfo] = await query.run();
+    log.debug("Running active subscriptions query");
+    const [activeSubscriptions, paginationInfo] = await query.run();
 
-  log.debug("Pagination info", paginationInfo);
-  log.debug("Active subscriptions", activeSubscriptions);
-  await Promise.all(activeSubscriptions.map(enqueueReportForSubscription));
+    log.debug("Pagination info", paginationInfo);
+    log.debug("Active subscriptions", activeSubscriptions);
+    await Promise.all(activeSubscriptions.map(enqueueReportForSubscription));
 
-  log.debug("Done processing batch of subscriptions");
+    log.debug("Done processing batch of subscriptions");
+  } catch (error) {
+    log.error("Unhandled error on processing report subscriptions", error);
+    exit(1);
+  }
 };
 
 main();
