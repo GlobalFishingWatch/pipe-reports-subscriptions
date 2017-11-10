@@ -1,16 +1,15 @@
-# Reports pipeline
+# Reports subscription
 
-Simple worker process which consumes report requests queue, generates the
-corresponding reports and mails them to the user.
+Simple worker process which enqueues report requests based on the reporting
+subscriptions of the users.
 
 ## Tech stack
 
 This is a [nodejs](https://nodejs.org/en/) application which connects to our
-data infrastructure at [Google Cloud](http://cloud.google.com/) to generate
-reports. The queries themselves are executed on our data tables in [Google
-BigQuery](https://cloud.google.com/bigquery/). Report requests are received
-through a [Google Pub/Sub](https://cloud.google.com/pubsub/) queue, and
-rendered using [PhantomJS](http://phantomjs.org/).
+data infrastructure at [Google Cloud](http://cloud.google.com/) to read active
+report subscriptions. The subscriptions are stored in [Google
+Datastore](https://cloud.google.com/datastore/). Report requests are enqueued
+in a [Google Pub/Sub](https://cloud.google.com/pubsub/) queue.
 
 Both the development and the production environments are containerized with
 [Docker](https://www.docker.com).
