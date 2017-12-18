@@ -52,15 +52,16 @@ const enqueueReportForSubscription = async (subscription) => {
     .download();
 
   const tilesetConfig = JSON.parse(tilesetConfigBuffer.toString('utf-8'));
-  const tilesetDataEndDate = tilesetConfig.data_end_date;
-  scopedLog.debug(`The tileset has data available up to ${tilesetDataEndDate}`);
+  const tilesetDataEndDate = moment(tilesetConfig.data_end_date);
+  const reportDataEndDate = moment(subscription.nextReportTimestamp);
+  scopedLog.debug(`The tileset has data available up to ${tilesetDataEndDate} and the report will query data up to ${reportDataEndDate}`);
 
-  if (tilesetDataEndDate < subscription.nextReportTimestamp) {
-    scopedLog.debug(`Data for dates up to ${subscription.nextReportTimestamp} is not available for this tileset`);
+  if (reportDataEndDate.isAfter(tilesetDataEndDate)) {
+    scopedLog.debug("Data not available for this tileset");
     return null;
   }
 
-  scopedLog.debug(`The tileset has data available for dates up to ${subscription.nextReportTimestamp}`);
+  scopedLog.debug("Data is available for this tileset");
 
   const reportRequest = buildReportRequest(subscription);
   scopedLog.debug("Report request", reportRequest);
